@@ -1,7 +1,7 @@
 services:
   hardhat:
     container_name: hardhat
-    image: node:16
+    image: node:18
     working_dir: /home/node/app/ethereum
     environment:
       - REPORT_GAS=TRUE
@@ -10,3 +10,13 @@ services:
     ports:
       - "8545:8545"
     command: sh -c "npm install --verbose && npx hardhat node"
+
+  backend:
+    container_name: backend
+    image: node:18
+    working_dir: /home/node/app
+    volumes:
+      - ./backend:/home/node/app
+    ports:
+      - "3000:3000"
+    command: sh -c "npm install --verbose && npm run dev"
