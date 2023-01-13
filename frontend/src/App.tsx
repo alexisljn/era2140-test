@@ -1,4 +1,4 @@
-import React, {createContext, useState} from 'react';
+import React, {createContext, useEffect, useState} from 'react';
 import {providers} from "ethers";
 
 interface AppContextInterface {
@@ -11,6 +11,18 @@ const AppContext = createContext<AppContextInterface>({
 
 function App() {
     const [provider, setProvider] = useState<providers.Web3Provider | undefined | null>(undefined);
+
+    useEffect(() => {
+        if (window.ethereum) {
+            setProvider(new providers.Web3Provider(window.ethereum));
+        } else {
+            setProvider(null);
+        }
+    }, []);
+
+    console.log("provider", provider);
+
+    //TODO if provider is null or undefine
 
     return (
         <AppContext.Provider value={{provider}}>
