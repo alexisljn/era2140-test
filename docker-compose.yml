@@ -20,3 +20,15 @@ services:
     ports:
       - "3000:3000"
     command: sh -c "npm install --verbose && npm run dev"
+
+  frontend:
+    container_name: frontend
+    image: node:18
+    working_dir: /home/node/app
+    environment:
+      - WDS_SOCKET_PORT=0
+    volumes:
+      - ./frontend:/home/node/app
+    ports:
+      - "80:3000"
+    command: sh -c "npm install --verbose && npm run start"
