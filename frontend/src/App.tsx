@@ -35,10 +35,11 @@ function App() {
         try {
             const address = await connectWallet(provider!);
 
-            changeAddress(address);
+            changeAddress(formatAddressWithChecksum(address));
         } catch (e: any) {
-            console.error(e) // Logging for user
+            console.error(e); // Logging for user
         }
+    }, [provider]);
 
     const handleLocallyProviderEvents = useCallback((e: any) => {
         switch (e.detail.type) {
@@ -51,7 +52,6 @@ function App() {
         }
     }, []);
 
-    }, [provider])
 
     useEffect(() => {
         if (window.ethereum) {
@@ -76,8 +76,14 @@ function App() {
 
         (async () => {
             setChainId((await provider.getNetwork()).chainId);
-        })();
 
+            const connectedAccount = await getConnectedAccounts(provider);
+
+            connectedAccount !== null
+                ? setAddress(formatAddressWithChecksum(connectedAccount))
+                : setAddress(connectedAccount)
+            ;
+        })();
     }, [provider])
 
     // console.log("provider", provider);
@@ -90,6 +96,9 @@ function App() {
         <AppContext.Provider value={{provider, address, chainId, changeAddress}}>
             <div className="App">
                 <button onClick={onConnectWallet}>Connect Wallet</button>
+                {address &&
+                    <p>{address}</p>
+                }
             </div>
         </AppContext.Provider>
     );
