@@ -54,6 +54,22 @@ authRouter.post('/', (req: Request, res: Response, next: NextFunction) => {
     }
 });
 
+authRouter.get('/message/:address(\\w+)', (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const {address} = req.params;
+
+        formatAddressWithChecksum(address);
+
+        res.status(200).json({message: generateMessageToSign(address)});
+    } catch (e) {
+        if (e.message.includes('invalid address')) {
+            const errorData: ErrorData = {status: 422, message: `Invalid address: ${req.params.address}`}
+
+            throw new Error(JSON.stringify(errorData));
+        }
+
+        next(e);
+    }
 });
 
 export {authRouter}
