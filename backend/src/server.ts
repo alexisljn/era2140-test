@@ -2,6 +2,7 @@ import express, {NextFunction, Request, Response} from 'express';
 import {authRouter} from "./routers/AuthRouter";
 import {ErrorData} from "./types/CommonTypes";
 import dotenv from "dotenv";
+import {quizRouter} from "./routers/QuizRouter";
 
 dotenv.config();
 const app = express();
@@ -24,6 +25,7 @@ app.options('*', (req: Request, res: Response) => {
 
 // Routing
 app.use('/auth', authRouter);
+app.use('/quiz', quizRouter);
 
 app.get('/', (req, res) => {
     res.send('Hello World!!')
