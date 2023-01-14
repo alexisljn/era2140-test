@@ -22,6 +22,16 @@ function saveAccessTokenInLocalStorage(address: string, accessToken: string) {
     window.localStorage.setItem('accessToken', JSON.stringify(accessTokens));
 }
 
+function getAccessTokenInLocalStorage(address: string) {
+    const accessTokens = window.localStorage.getItem('accessToken');
+
+    if (!accessTokens) return null;
+
+    try {
+        return JSON.parse(accessTokens)[address] || null;
+    } catch (e) {
+        return null;
+    }
 }
 
 export {signMessage, saveAccessTokenInLocalStorage, getAccessTokenInLocalStorage};
