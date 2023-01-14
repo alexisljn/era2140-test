@@ -5,12 +5,14 @@ import {connectWallet} from "./utils/ProviderUtils";
 interface AppContextInterface {
     provider: providers.Web3Provider | undefined | null;
     address: string | null;
+    chainId: number | null;
     changeAddress: (address: string | null) => void;
 }
 
 const AppContext = createContext<AppContextInterface>({
     provider: undefined,
     address: null,
+    chainId: null,
     changeAddress: () => {},
 });
 
@@ -19,6 +21,8 @@ function App() {
     const [provider, setProvider] = useState<providers.Web3Provider | undefined | null>(undefined);
 
     const [address, setAddress] = useState<string | null>(null);
+
+    const [chainId, setChainId] = useState<number | null>(null);
 
     const changeAddress = useCallback((address: string | null) => {
         setAddress(address);
