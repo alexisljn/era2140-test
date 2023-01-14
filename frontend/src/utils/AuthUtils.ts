@@ -1,4 +1,5 @@
 import {Signer} from "ethers";
+import {formatAddressWithChecksum} from "./Utils";
 
 async function signMessage(signer: Signer, message: string): Promise<string | null> {
     try {
@@ -17,7 +18,7 @@ function saveAccessTokenInLocalStorage(address: string, accessToken: string) {
         accessTokens = JSON.parse(accessTokens) as {[key: string]: string};
     }
 
-    accessTokens[address] = accessToken;
+    accessTokens[formatAddressWithChecksum(address)] = accessToken;
 
     window.localStorage.setItem('accessToken', JSON.stringify(accessTokens));
 }
@@ -28,7 +29,7 @@ function getAccessTokenInLocalStorage(address: string) {
     if (!accessTokens) return null;
 
     try {
-        return JSON.parse(accessTokens)[address] || null;
+        return JSON.parse(accessTokens)[formatAddressWithChecksum(address)] || null;
     } catch (e) {
         return null;
     }
