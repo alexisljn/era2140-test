@@ -110,7 +110,7 @@ function App() {
             const connectedAccount = await getConnectedAccounts(provider);
 
             connectedAccount !== null
-                ? setAddress(formatAddressWithChecksum(connectedAccount)) // Verify Token
+                ? setAddress(formatAddressWithChecksum(connectedAccount))
                 : setAddress(connectedAccount)
             ;
         })();
@@ -119,22 +119,28 @@ function App() {
     useEffect(() => {
         if (!address || !provider) return;
 
-        (async () => {
+        const accessToken = getAccessTokenInLocalStorage(address);
 
-            try {
-            } catch (e: any) {
-                console.error(e);
-            }
+        if (accessToken) {
+            setHasValidToken(true);
 
-        })();
-    }, [address, provider])
+            return;
+        }
+
+        setHasValidToken(false);
+    }, [address]);
 
     //TODO if provider is null or undefined
 
     return (
         <AppContext.Provider value={{provider, address, hasValidToken, chainId, changeAddress}}>
             <div className="App">
-                <button onClick={onConnectWallet}>Connect Wallet</button>
+                {hasValidToken
+                    ? <p>Connecté</p>
+                    : address
+                        ? <button onClick={onSignIn}>Sign In</button>
+                        : <button onClick={onConnectWallet}>Connect Wallet</button>
+                }
                 {address &&
                     <p>{address}</p>
                 }
