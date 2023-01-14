@@ -21,6 +21,25 @@ app.get('/', (req, res) => {
     res.send('Hello World!!')
 })
 
+// 404
+app.use(({next}) => {
+    const errorData: ErrorData = {status: 404, message: 'Not Found'};
+
+    next(new Error(JSON.stringify(errorData)));
+});
+
+// Errors
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    let error: ErrorData = {status: 500, message: 'Something went wrong'};
+
+    try {
+        error = JSON.parse(err.message);
+    } catch (e) {}
+
+    res.status(error.status).json({message: error.message});
+})
+
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
