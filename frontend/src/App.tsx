@@ -1,6 +1,8 @@
 import React, {createContext, useCallback, useEffect, useState} from 'react';
 import {providers} from "ethers";
-import {connectWallet} from "./utils/ProviderUtils";
+import {connectWallet, getConnectedAccounts} from "./utils/ProviderUtils";
+import {formatAddressWithChecksum} from "./utils/Utils";
+import {cleanProviderEvents, listenProviderEvents, PROVIDER_EVENT} from "./events/ProviderEventsManager";
 
 interface AppContextInterface {
     provider: providers.Web3Provider | undefined | null;
@@ -38,11 +40,32 @@ function App() {
             console.error(e) // Logging for user
         }
 
+    const handleLocallyProviderEvents = useCallback((e: any) => {
+        switch (e.detail.type) {
+            case "chainChanged":
+                window.location.reload();
+                break;
+            case "accountsChanged":
+                setAddress(e.detail.value);
+                break;
+        }
+    }, []);
+
     }, [provider])
 
     useEffect(() => {
         if (window.ethereum) {
             setProvider(new providers.Web3Provider(window.ethereum));
+
+            listenProviderEvents(window.ethereum);
+
+            window.addEventListener(PROVIDER_EVENT, handleLocallyProviderEvents);
+
+            return () => {
+                cleanProviderEvents(window.ethereum);
+
+                window.addEventListener(PROVIDER_EVENT, handleLocallyProviderEvents);
+            }
         } else {
             setProvider(null);
         }
