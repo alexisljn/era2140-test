@@ -13,6 +13,10 @@ app.options('*', (req: Request, res: Response) => {
 
     res.status(200).send();
 });
+
+// Routing
+app.use('/auth', authRouter);
+
 app.get('/', (req, res) => {
     res.send('Hello World!!')
 })
