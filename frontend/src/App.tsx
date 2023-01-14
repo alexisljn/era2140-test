@@ -1,8 +1,13 @@
 import React, {createContext, useCallback, useEffect, useState} from 'react';
 import {providers} from "ethers";
 import {connectWallet, getConnectedAccounts} from "./utils/ProviderUtils";
-import {formatAddressWithChecksum} from "./utils/Utils";
+import {fetchApi, formatAddressWithChecksum} from "./utils/Utils";
 import {cleanProviderEvents, listenProviderEvents, PROVIDER_EVENT} from "./events/ProviderEventsManager";
+import {
+    getAccessTokenInLocalStorage,
+    saveAccessTokenInLocalStorage,
+    signMessage
+} from "./utils/AuthUtils";
 
 interface AppContextInterface {
     provider: providers.Web3Provider | undefined | null;
@@ -43,7 +48,29 @@ function App() {
         } catch (e: any) {
             console.error(e); // Logging for user
         }
-    }, [provider]);
+    }, [provider, changeAddress]);
+
+    // TODO Deport
+    const onSignIn = useCallback(async () => {
+        try {
+            const {message} = await fetchApi(`auth/message/${address}`);
+
+            const signedMessage = await signMessage(provider!.getSigner(), message);
+
+            const {accessToken} = await fetchApi(
+                'auth',
+                'POST',
+                [{name: 'Content-Type', value: 'application/json'}],
+                {address, message: signedMessage}
+            );
+
+            saveAccessTokenInLocalStorage(address!, accessToken);
+
+            setHasValidToken(true);
+        } catch (e: any) {
+            console.error(e);
+        }
+    }, [provider, address])
 
     const handleLocallyProviderEvents = useCallback((e: any) => {
         switch (e.detail.type) {
@@ -55,7 +82,6 @@ function App() {
                 break;
         }
     }, []);
-
 
     useEffect(() => {
         if (window.ethereum) {
@@ -73,7 +99,7 @@ function App() {
         } else {
             setProvider(null);
         }
-    }, []);
+    }, [handleLocallyProviderEvents]);
 
     useEffect(() => {
         if (!provider) return;
