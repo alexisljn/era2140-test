@@ -125,7 +125,13 @@ function App() {
     }, [provider])
 
     useEffect(() => {
-        if (!address || !provider) return;
+        if (!provider) return;
+
+        if (!address) {
+            setHasValidToken(false);
+
+            return;
+        }
 
         const accessToken = getAccessTokenInLocalStorage(address);
 
