@@ -41,5 +41,5 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+    console.log(`Server listening on port ${port}`)
 })
