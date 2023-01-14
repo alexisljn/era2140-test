@@ -7,6 +7,7 @@ import {cleanProviderEvents, listenProviderEvents, PROVIDER_EVENT} from "./event
 interface AppContextInterface {
     provider: providers.Web3Provider | undefined | null;
     address: string | null;
+    hasValidToken: boolean;
     chainId: number | null;
     changeAddress: (address: string | null) => void;
 }
@@ -14,6 +15,7 @@ interface AppContextInterface {
 const AppContext = createContext<AppContextInterface>({
     provider: undefined,
     address: null,
+    hasValidToken: false,
     chainId: null,
     changeAddress: () => {},
 });
@@ -23,6 +25,8 @@ function App() {
     const [provider, setProvider] = useState<providers.Web3Provider | undefined | null>(undefined);
 
     const [address, setAddress] = useState<string | null>(null);
+
+    const [hasValidToken, setHasValidToken] = useState<boolean>(false);
 
     const [chainId, setChainId] = useState<number | null>(null);
 
@@ -80,20 +84,29 @@ function App() {
             const connectedAccount = await getConnectedAccounts(provider);
 
             connectedAccount !== null
-                ? setAddress(formatAddressWithChecksum(connectedAccount))
+                ? setAddress(formatAddressWithChecksum(connectedAccount)) // Verify Token
                 : setAddress(connectedAccount)
             ;
         })();
     }, [provider])
 
-    // console.log("provider", provider);
-    // console.log("chainId", chainId);
-    console.log('address', address);
+    useEffect(() => {
+        if (!address || !provider) return;
+
+        (async () => {
+
+            try {
+            } catch (e: any) {
+                console.error(e);
+            }
+
+        })();
+    }, [address, provider])
 
     //TODO if provider is null or undefined
 
     return (
-        <AppContext.Provider value={{provider, address, chainId, changeAddress}}>
+        <AppContext.Provider value={{provider, address, hasValidToken, chainId, changeAddress}}>
             <div className="App">
                 <button onClick={onConnectWallet}>Connect Wallet</button>
                 {address &&
