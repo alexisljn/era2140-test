@@ -70,7 +70,15 @@ function App() {
         } catch (e: any) {
             console.error(e);
         }
-    }, [provider, address])
+    }, [provider, address]);
+
+    const testToken = useCallback(async () => {
+        const token = getAccessTokenInLocalStorage(address!);
+
+        const response = await fetchApi('quiz', 'POST', [{name: 'Authorization', value: `Bearer ${token}`}])
+
+        console.log(response);
+    }, [address]);
 
     const handleLocallyProviderEvents = useCallback((e: any) => {
         switch (e.detail.type) {
@@ -136,7 +144,11 @@ function App() {
         <AppContext.Provider value={{provider, address, hasValidToken, chainId, changeAddress}}>
             <div className="App">
                 {hasValidToken
-                    ? <p>Connecté</p>
+                    ?
+                        <>
+                            <button onClick={testToken}>Test token</button>
+                            <p>Connecté</p>
+                        </>
                     : address
                         ? <button onClick={onSignIn}>Sign In</button>
                         : <button onClick={onConnectWallet}>Connect Wallet</button>
