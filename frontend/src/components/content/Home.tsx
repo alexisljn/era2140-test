@@ -1,12 +1,12 @@
 import {useCallback, useContext} from "react";
 import {AppContext} from "../../App";
-import {connectWallet} from "../../utils/ProviderUtils";
+import {connectWallet, getSupportedChainLabel, isChainIdSupported} from "../../utils/ProviderUtils";
 import {fetchApi, formatAddressWithChecksum} from "../../utils/Utils";
 import {getAccessTokenInLocalStorage, saveAccessTokenInLocalStorage, signMessage} from "../../utils/AuthUtils";
 
 function Home() {
 
-    const {provider, address, hasValidToken, changeAddress, changeHasValidToken} = useContext(AppContext);
+    const {provider, address, chainId, hasValidToken, changeAddress, changeHasValidToken} = useContext(AppContext);
 
     const onConnectWallet = useCallback(async () => {
         try {
@@ -37,7 +37,7 @@ function Home() {
         } catch (e: any) {
             console.error(e);
         }
-    }, [provider, address]);
+    }, [provider, address, changeHasValidToken]);
 
 
     const testToken = useCallback(async () => {
@@ -77,6 +77,22 @@ function Home() {
         )
     }
 
+    if (!isChainIdSupported(chainId!)) {
+        return (
+            <>
+                <div className="home">
+                    <div className="home-upper">
+                        <div className="home-upper-box">
+                            <p className="home-upper-box-title">
+                                Switch on <span className="network">{getSupportedChainLabel(Number(process.env.REACT_APP_CHAIN_ID))}</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </>
+        )
+    }
+
     if (!hasValidToken && !address) {
         return (
             <>
@@ -98,8 +114,6 @@ function Home() {
     }
 
     if (!hasValidToken && address) {
-        // Si bad network afficher message de switch
-
         return (
             <>
                 <div className="home">
