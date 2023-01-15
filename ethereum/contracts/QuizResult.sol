@@ -13,6 +13,8 @@ contract QuizResult is Ownable, ERC721 {
 
     string private _baseUri;
 
+    bytes32 public merkleRoot;
+
     constructor(
         string memory name_,
         string memory symbol_,
@@ -24,6 +26,10 @@ contract QuizResult is Ownable, ERC721 {
 
     function _baseURI() internal override view returns(string memory) {
         return _baseUri;
+    }
+
+    function setMerkleRoot(bytes32 merkleRoot_) external onlyOwner {
+        merkleRoot = merkleRoot_;
     }
 
     function mint() external {
