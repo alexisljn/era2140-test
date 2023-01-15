@@ -41,4 +41,8 @@ function generateRequestHeaders(headersArray: Array<HeaderInterface>) {
     return headers;
 }
 
-export {formatAddressWithChecksum, fetchApi}
+function shortenAddress(address: string) {
+    return `${address.slice(0, 4)}...${address.slice(-4)}`;
+}
+
+export {formatAddressWithChecksum, fetchApi, shortenAddress}
