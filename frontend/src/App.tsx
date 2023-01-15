@@ -1,14 +1,13 @@
 import React, {createContext, useCallback, useEffect, useState} from 'react';
 import {providers} from "ethers";
-import {connectWallet, getConnectedAccounts} from "./utils/ProviderUtils";
-import {fetchApi, formatAddressWithChecksum} from "./utils/Utils";
+import {getConnectedAccounts, isChainIdSupported} from "./utils/ProviderUtils";
+import {formatAddressWithChecksum} from "./utils/Utils";
 import {cleanProviderEvents, listenProviderEvents, PROVIDER_EVENT} from "./events/ProviderEventsManager";
 import {
     getAccessTokenInLocalStorage,
-    saveAccessTokenInLocalStorage,
-    signMessage
 } from "./utils/AuthUtils";
 import {Header} from "./components/common/Header";
+import {Content} from "./components/common/Content";
 
 interface AppContextInterface {
     provider: providers.Web3Provider | undefined | null;
@@ -98,12 +97,16 @@ function App() {
                 : setAddress(connectedAccount)
             ;
         })();
-    }, [provider])
+    }, [provider]);
 
     useEffect(() => {
-        if (!provider) return;
+        if (!address || !chainId) {
+            setHasValidToken(false);
 
-        if (!address) {
+            return;
+        }
+
+        if (!isChainIdSupported(chainId)) {
             setHasValidToken(false);
 
             return;
@@ -118,9 +121,7 @@ function App() {
         }
 
         setHasValidToken(false);
-    }, [address]);
-
-    //TODO if provider is null or undefined
+    }, [address, chainId]);
 
     return (
         <AppContext.Provider value={{
@@ -138,9 +139,8 @@ function App() {
                     <Header/>
                 </div>
                 <div className={`content ${backgroundClass}`}>
-                    {/*Component qui affiche le bon sous component pour */}
+                    <Content/>
                 </div>
-
             </div>
         </AppContext.Provider>
     );
