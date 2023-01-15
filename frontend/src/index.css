@@ -124,6 +124,10 @@ code {
     background-color: #134ec7;
 }
 
+.network {
+    text-transform: capitalize;
+}
+
 .base-bg {
     background: url('../public/base-bg.jpg') center center no-repeat;
     background-size: cover;
