@@ -52,6 +52,78 @@ code {
 
 }
 
+.home {
+    display: grid;
+    grid-template-rows: 4fr 1fr;
+
+    height: 100%;
+}
+
+.home-upper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.home-upper-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+
+
+    background-color: rgba(28, 28, 28, 0.8);
+    color: white;
+
+    padding: 30px 120px;
+    border-radius: 15px;
+}
+
+.home-upper-box-title {
+    margin: 0;
+    font-size: 40px;
+    font-weight: 600;
+}
+
+.home-lower {
+    display: flex;
+    justify-content: center;
+}
+
+.home-lower-box {
+    background-color: rgba(28, 28, 28, 0.8);
+    color: white;
+
+    padding: 30px 90px;
+    border-radius: 15px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 1px 1px 5px #0e0e0e;
+
+    font-size: 18px;
+}
+
+.btn:hover {
+    cursor: pointer;
+}
+
+.btn:focus {
+    outline: none;
+}
+
+.primary {
+    background-color: #0e42b0;
+    color: white;
+}
+
+.primary:hover {
+    background-color: #134ec7;
+}
+
 .base-bg {
     background: url('../public/base-bg.jpg') center center no-repeat;
     background-size: cover;
