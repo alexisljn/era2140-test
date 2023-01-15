@@ -8,21 +8,28 @@ import {
     saveAccessTokenInLocalStorage,
     signMessage
 } from "./utils/AuthUtils";
+import {Header} from "./components/common/Header";
 
 interface AppContextInterface {
     provider: providers.Web3Provider | undefined | null;
     address: string | null;
     hasValidToken: boolean;
     chainId: number | null;
+    backgroundClass: string;
     changeAddress: (address: string | null) => void;
+    changeHasValidToken: (isValid: boolean) => void;
+    changeBackgroundClass: (backgroundClass: string) => void;
 }
 
-const AppContext = createContext<AppContextInterface>({
+export const AppContext = createContext<AppContextInterface>({
     provider: undefined,
     address: null,
     hasValidToken: false,
     chainId: null,
+    backgroundClass: 'base-bg',
     changeAddress: () => {},
+    changeHasValidToken: () => {},
+    changeBackgroundClass: () => {},
 });
 
 function App() {
@@ -35,50 +42,19 @@ function App() {
 
     const [chainId, setChainId] = useState<number | null>(null);
 
+    const [backgroundClass, setBackgroundClass] = useState<string>('base-bg');
+
     const changeAddress = useCallback((address: string | null) => {
         setAddress(address);
     }, []);
 
-    //TODO Deport
-    const onConnectWallet = useCallback(async () => {
-        try {
-            const address = await connectWallet(provider!);
+    const changeHasValidToken = useCallback((isValid: boolean) => {
+        setHasValidToken(isValid);
+    }, []);
 
-            changeAddress(formatAddressWithChecksum(address));
-        } catch (e: any) {
-            console.error(e); // Logging for user
-        }
-    }, [provider, changeAddress]);
-
-    // TODO Deport
-    const onSignIn = useCallback(async () => {
-        try {
-            const {message} = await fetchApi(`auth/message/${address}`);
-
-            const signedMessage = await signMessage(provider!.getSigner(), message);
-
-            const {accessToken} = await fetchApi(
-                'auth',
-                'POST',
-                [{name: 'Content-Type', value: 'application/json'}],
-                {address, message: signedMessage}
-            );
-
-            saveAccessTokenInLocalStorage(address!, accessToken);
-
-            setHasValidToken(true);
-        } catch (e: any) {
-            console.error(e);
-        }
-    }, [provider, address]);
-
-    const testToken = useCallback(async () => {
-        const token = getAccessTokenInLocalStorage(address!);
-
-        const response = await fetchApi('quiz', 'POST', [{name: 'Authorization', value: `Bearer ${token}`}])
-
-        console.log(response);
-    }, [address]);
+    const changeBackgroundClass = useCallback((backgroundClass: string) => {
+        setBackgroundClass(backgroundClass);
+    }, []);
 
     const handleLocallyProviderEvents = useCallback((e: any) => {
         switch (e.detail.type) {
@@ -102,7 +78,7 @@ function App() {
             return () => {
                 cleanProviderEvents(window.ethereum);
 
-                window.addEventListener(PROVIDER_EVENT, handleLocallyProviderEvents);
+                window.removeEventListener(PROVIDER_EVENT, handleLocallyProviderEvents);
             }
         } else {
             setProvider(null);
@@ -147,21 +123,24 @@ function App() {
     //TODO if provider is null or undefined
 
     return (
-        <AppContext.Provider value={{provider, address, hasValidToken, chainId, changeAddress}}>
-            <div className="App">
-                {hasValidToken
-                    ?
-                        <>
-                            <button onClick={testToken}>Test token</button>
-                            <p>Connecté</p>
-                        </>
-                    : address
-                        ? <button onClick={onSignIn}>Sign In</button>
-                        : <button onClick={onConnectWallet}>Connect Wallet</button>
-                }
-                {address &&
-                    <p>{address}</p>
-                }
+        <AppContext.Provider value={{
+            provider,
+            address,
+            hasValidToken,
+            chainId,
+            backgroundClass,
+            changeAddress,
+            changeHasValidToken,
+            changeBackgroundClass
+        }}>
+            <div className="grid">
+                <div className="header">
+                    <Header/>
+                </div>
+                <div className={`content ${backgroundClass}`}>
+                    {/*Component qui affiche le bon sous component pour */}
+                </div>
+
             </div>
         </AppContext.Provider>
     );
