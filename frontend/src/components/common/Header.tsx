@@ -1,10 +1,11 @@
 import React, {useContext} from "react";
 import {AppContext} from "../../App";
 import {shortenAddress} from "../../utils/Utils";
+import {getChainLabel} from "../../utils/ProviderUtils";
 
 function Header() {
 
-    const {address, hasValidToken} = useContext(AppContext)
+    const {provider, address, hasValidToken} = useContext(AppContext)
 
     if (!hasValidToken && !address) {
         return (
@@ -25,7 +26,9 @@ function Header() {
                 <div className="connected-label">
                     <div>
                         <i className="fa-solid fa-diagram-project"></i>
-                        <span className="connection-status">connected to TODO_NETWORK</span>
+                        <span className="connection-status">
+                            connected to <span className="network">{getChainLabel(provider!.network)}</span>
+                        </span>
                     </div>
                     <div>
                         <i className="fa-solid fa-wallet"></i>
@@ -42,12 +45,16 @@ function Header() {
             <div className="connected-label">
                 <div>
                     <i className="fa-solid fa-diagram-project"></i>
-                    <span className="connection-status">authenticated on TODO_NETWORK</span>
+                    <span className="connection-status">
+                        authenticated on <span className="network">{getChainLabel(provider!.network)}</span>
+                    </span>
                 </div>
-                <div>
-                    <i className="fa-solid fa-wallet"></i>
-                    <span className="connection-status">{shortenAddress(address!)}</span>
-                </div>
+                {address &&
+                    <div>
+                        <i className="fa-solid fa-wallet"></i>
+                        <span className="connection-status">{shortenAddress(address!)}</span>
+                    </div>
+                }
             </div>
         </>
     )
