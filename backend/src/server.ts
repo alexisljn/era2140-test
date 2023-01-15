@@ -3,8 +3,11 @@ import {authRouter} from "./routers/AuthRouter";
 import {ErrorData} from "./types/CommonTypes";
 import dotenv from "dotenv";
 import {quizRouter} from "./routers/QuizRouter";
+import {initiateProvider} from "./utils/ProviderUtils";
 
 dotenv.config();
+initiateProvider();
+
 const app = express();
 const port = 3000
 
