@@ -26,7 +26,7 @@ function Quiz({changeComponentToDisplay}: ContentComponentProps) {
 
     if (quiz.length === 0) {
         return (
-            <div>TODO LOADING...</div>
+            <div className="loading">Loading...</div>
         )
     }
 
