@@ -1,8 +1,11 @@
-import {ethers, providers, Signer} from "ethers";
+import {Contract, ethers, providers, Signer} from "ethers";
+import CONTRACT_ABI_JSON from "../artifacts/contracts/QuizResult.sol/QuizResult.json";
 
 let provider: providers.Provider | null = null;
 
 let wallet: Signer | null = null;
+
+let contract: Contract | null = null;
 
 function initiateProvider() {
     try {
@@ -13,7 +16,9 @@ function initiateProvider() {
 
         wallet = new ethers.Wallet(String(process.env.PRIVATE_KEY), provider);
 
-        console.log("Provider and wallet has been successfully initiated"); // Server logging
+        contract = new ethers.Contract(String(process.env.CONTRACT_ADDRESS), CONTRACT_ABI_JSON.abi, wallet);
+
+        console.log("Provider, wallet and contract has been successfully initiated"); // Server logging
     } catch (e) {
         console.error(e) // Server logging
     }
