@@ -132,3 +132,13 @@ code {
     background: url('../public/base-bg.jpg') center center no-repeat;
     background-size: cover;
 }
+
+.quiz-bg {
+    background: rgb(0,0,0);
+    background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(35,35,57,1) 100%);
+}
+
+.loading {
+    color: white;
+    margin: 10px 0 0 15px
+}
