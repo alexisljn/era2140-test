@@ -4,3 +4,8 @@ export interface HeaderInterface {
 }
 
 export type MethodsAllowed = 'GET' | 'POST';
+
+export interface Question {
+    content: string;
+    answers: Array<{label: string}>
+}
