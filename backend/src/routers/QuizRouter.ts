@@ -1,10 +1,21 @@
 import e, {Router} from "express";
 import {ErrorData} from "../types/CommonTypes";
 import jwt from "jsonwebtoken";
+import {generateQuiz} from "../managers/QuizManager";
 
 const quizRouter: Router = Router();
 
-quizRouter.post('/', (req, res, next) => {
+quizRouter
+    .get('/', (req, res, next) => {
+        try {
+            const quiz = generateQuiz();
+
+            res.status(200).json(quiz);
+        } catch (e) {
+            next(e);
+        }
+    })
+    .post('/', (req, res, next) => {
     try {
         const accessToken = req.get('Authorization');
 
