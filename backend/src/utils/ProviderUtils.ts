@@ -10,7 +10,7 @@ let contract: Contract | null = null;
 function initiateProvider() {
     try {
         String(process.env.NODE_ENV === "development")
-            ? provider =  ethers.getDefaultProvider(String(process.env.NETWORK_NAME))
+            ? provider = ethers.getDefaultProvider(String(process.env.NETWORK_NAME))
             : provider = ethers.getDefaultProvider(String(process.env.NETWORK_NAME), {infura: String(process.env.INFURA_KEY)})
         ;
 
@@ -24,4 +24,12 @@ function initiateProvider() {
     }
 }
 
-export {initiateProvider}
+async function updateMerkleRoot(merkleRoot: string) {
+    if (!contract) {
+        throw new Error("contract not instanced");
+    }
+
+    await contract.setMerkleRoot(merkleRoot);
+}
+
+export {initiateProvider, updateMerkleRoot}
