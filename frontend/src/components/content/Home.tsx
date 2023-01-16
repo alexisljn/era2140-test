@@ -6,7 +6,7 @@ import {getAccessTokenInLocalStorage, saveAccessTokenInLocalStorage, signMessage
 
 function Home() {
 
-    const {provider, address, chainId, hasValidToken, changeAddress, changeHasValidToken} = useContext(AppContext);
+    const {provider, contract, address, chainId, hasValidToken, changeAddress, changeHasValidToken} = useContext(AppContext);
 
     const onConnectWallet = useCallback(async () => {
         try {
@@ -47,6 +47,21 @@ function Home() {
 
         console.log(response);
     }, [address]);
+
+    const testProof = useCallback(async () => {
+        try {
+            await fetchApi(`merkle/root/${address}`);
+
+            const {proof} = await fetchApi(`merkle/proof/${address}`);
+
+            await contract!.mint(proof);
+
+            console.log("good")
+        } catch (e: any) {
+            console.error(e);
+        }
+
+    }, [contract])
 
 
     if (provider === undefined) {
@@ -140,6 +155,7 @@ function Home() {
                     <div className="home-upper-box">
                         <p className="home-upper-box-title">Mon test technique</p>
                         <button className="btn primary" onClick={testToken}>Demarrer</button>
+                        <button onClick={testProof}>MINT TEST</button>
                     </div>
                 </div>
                 <div className="home-lower">

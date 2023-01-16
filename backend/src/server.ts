@@ -3,7 +3,13 @@ import {authRouter} from "./routers/AuthRouter";
 import {ErrorData} from "./types/CommonTypes";
 import dotenv from "dotenv";
 import {quizRouter} from "./routers/QuizRouter";
-import {initiateProvider} from "./utils/ProviderUtils";
+import {initiateProvider, updateMerkleRoot} from "./utils/ProviderUtils";
+import {
+    addAddressToMerkleTree,
+    generateMerkleTree,
+    generateSingleLeaf,
+    isAddressInMerkleTree
+} from "./managers/MerkleManager";
 
 dotenv.config();
 initiateProvider();
@@ -32,6 +38,47 @@ app.use('/quiz', quizRouter);
 
 app.get('/', (req, res) => {
     res.send('Hello World!!')
+})
+
+app.get('/merkle/root/:address(\\w+)', async (req, res, next) => {
+    try {
+        if (!isAddressInMerkleTree(req.params.address)) {
+
+            addAddressToMerkleTree(req.params.address);
+
+            const merkleTree = generateMerkleTree();
+
+            await updateMerkleRoot(merkleTree.getHexRoot());
+
+            res.status(201).end();
+
+            return;
+        }
+
+        res.status(200).end();
+    } catch (e) {
+        console.log(e)
+        next(e);
+    }
+});
+
+app.get('/merkle/proof/:address(\\w+)', (req, res, next) => {
+    try {
+        if (!isAddressInMerkleTree(req.params.address)) {
+            res.status(403).end();
+
+            return;
+        }
+
+        const merkleTree = generateMerkleTree();
+
+        const merkleProof = merkleTree.getHexProof(generateSingleLeaf(req.params.address));
+
+        res.status(200).json({proof: merkleProof});
+    } catch (e) {
+        console.error(e);
+        next(e);
+    }
 })
 
 // 404

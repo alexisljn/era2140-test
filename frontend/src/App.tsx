@@ -1,5 +1,5 @@
 import React, {createContext, useCallback, useEffect, useState} from 'react';
-import {providers} from "ethers";
+import {Contract, providers} from "ethers";
 import {getConnectedAccounts, isChainIdSupported} from "./utils/ProviderUtils";
 import {formatAddressWithChecksum} from "./utils/Utils";
 import {cleanProviderEvents, listenProviderEvents, PROVIDER_EVENT} from "./events/ProviderEventsManager";
@@ -8,9 +8,11 @@ import {
 } from "./utils/AuthUtils";
 import {Header} from "./components/common/Header";
 import {Content} from "./components/common/Content";
+import {getContract} from "./utils/ContractUtils";
 
 interface AppContextInterface {
     provider: providers.Web3Provider | undefined | null;
+    contract: Contract | null;
     address: string | null;
     hasValidToken: boolean;
     chainId: number | null;
@@ -22,6 +24,7 @@ interface AppContextInterface {
 
 export const AppContext = createContext<AppContextInterface>({
     provider: undefined,
+    contract: null,
     address: null,
     hasValidToken: false,
     chainId: null,
@@ -34,6 +37,8 @@ export const AppContext = createContext<AppContextInterface>({
 function App() {
 
     const [provider, setProvider] = useState<providers.Web3Provider | undefined | null>(undefined);
+
+    const [contract, setContract] = useState<Contract | null>(null);
 
     const [address, setAddress] = useState<string | null>(null);
 
@@ -96,6 +101,8 @@ function App() {
                 ? setAddress(formatAddressWithChecksum(connectedAccount))
                 : setAddress(connectedAccount)
             ;
+
+            setContract(getContract(provider));
         })();
     }, [provider]);
 
@@ -126,6 +133,7 @@ function App() {
     return (
         <AppContext.Provider value={{
             provider,
+            contract,
             address,
             hasValidToken,
             chainId,
