@@ -4,7 +4,12 @@ import {ErrorData} from "./types/CommonTypes";
 import dotenv from "dotenv";
 import {quizRouter} from "./routers/QuizRouter";
 import {initiateProvider, updateMerkleRoot} from "./utils/ProviderUtils";
-import {addAddressToMerkleTree, generateMerkleTree, isAddressInMerkleTree} from "./managers/MerkleManager";
+import {
+    addAddressToMerkleTree,
+    generateMerkleTree,
+    generateSingleLeaf,
+    isAddressInMerkleTree
+} from "./managers/MerkleManager";
 
 dotenv.config();
 initiateProvider();
@@ -56,6 +61,25 @@ app.get('/merkle/root/:address(\\w+)', async (req, res, next) => {
         next(e);
     }
 });
+
+app.get('/merkle/proof/:address(\\w+)', (req, res, next) => {
+    try {
+        if (!isAddressInMerkleTree(req.params.address)) {
+            res.status(403).end();
+
+            return;
+        }
+
+        const merkleTree = generateMerkleTree();
+
+        const merkleProof = merkleTree.getHexProof(generateSingleLeaf(req.params.address));
+
+        res.status(200).json({proof: merkleProof});
+    } catch (e) {
+        console.error(e);
+        next(e);
+    }
+})
 
 // 404
 app.use(({next}) => {
