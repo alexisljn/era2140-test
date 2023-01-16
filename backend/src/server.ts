@@ -3,7 +3,7 @@ import {authRouter} from "./routers/AuthRouter";
 import {ErrorData} from "./types/CommonTypes";
 import dotenv from "dotenv";
 import {quizRouter} from "./routers/QuizRouter";
-import {initiateProvider} from "./utils/ProviderUtils";
+import {initiateProvider, updateMerkleRoot} from "./utils/ProviderUtils";
 import {addAddressToMerkleTree, generateMerkleTree, isAddressInMerkleTree} from "./managers/MerkleManager";
 
 dotenv.config();
@@ -35,25 +35,26 @@ app.get('/', (req, res) => {
     res.send('Hello World!!')
 })
 
-app.get('/merkle/root/:address(\\w+)', (req, res, next) => {
+app.get('/merkle/root/:address(\\w+)', async (req, res, next) => {
     try {
-        if (!isAddressInMerkleTree("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266")) {
+        if (!isAddressInMerkleTree(req.params.address)) {
 
-            addAddressToMerkleTree("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266");
+            addAddressToMerkleTree(req.params.address);
 
             const merkleTree = generateMerkleTree();
 
-            console.log(merkleTree.getHexRoot());
+            await updateMerkleRoot(merkleTree.getHexRoot());
 
             res.status(201).end();
+
+            return;
         }
-        console.log('no update');
+
         res.status(200).end();
     } catch (e) {
         console.log(e)
         next(e);
     }
-
 });
 
 // 404
