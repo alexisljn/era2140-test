@@ -1,4 +1,4 @@
-import {Answer, Question, Score} from "../types/CommonTypes";
+import {Answer, Question, Scores} from "../types/CommonTypes";
 
 const quiz: Array<Question> = [
     {
@@ -120,17 +120,23 @@ function generateQuiz(): Array<Partial<Question>> {
     });
 }
 
-function computeScores(answers: Array<Answer>): Array<Score> {
-    const scores: Array<Score> = [];
+function computeScores(answers: Array<Answer>): Scores {
+    const scores: Scores = {time: 0, total: 0, answers: []};
 
     for (let i = 0; i < answers.length; i++) {
         const goodAnswer = getGoodAnswer(quiz[i]);
 
-        scores.push({
+        scores.answers.push({
             question: quiz[i].content,
             hadRight: answers[i].label === goodAnswer.label,
             answeredIn: answers[i].answeredIn
         });
+
+        if (answers[i].label === goodAnswer.label) {
+            scores.total++;
+        }
+
+        scores.time += answers[i].answeredIn;
     }
 
     return scores;
