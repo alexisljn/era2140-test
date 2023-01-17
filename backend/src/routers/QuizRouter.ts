@@ -1,33 +1,51 @@
-import e, {Router} from "express";
+import {Router} from "express";
 import {ErrorData} from "../types/CommonTypes";
-import jwt from "jsonwebtoken";
+import {computeScores, generateQuiz} from "../managers/QuizManager";
+import {verifyAccessToken} from "../utils/AuthUtils";
+import {addAddressToMerkleTree, generateMerkleTree, isAddressInMerkleTree} from "../managers/MerkleManager";
+import {updateScores} from "../utils/ProviderUtils";
 
 const quizRouter: Router = Router();
 
-quizRouter.post('/', (req, res, next) => {
+quizRouter
+    .get('/', (req, res, next) => {
+        try {
+            const quiz = generateQuiz();
+
+            res.status(200).json(quiz);
+        } catch (e) {
+            next(e);
+        }
+    })
+    .post('/', async (req, res, next) => {
     try {
         const accessToken = req.get('Authorization');
 
-        // No access token
-        if (!accessToken) {
-            const errorData: ErrorData = {status: 401, message: "Unauthorized"};
+        const accessTokenPayload = verifyAccessToken(accessToken);
+
+        const address = accessTokenPayload['user'];
+
+        if (!req.body.hasOwnProperty('answers')) {
+            const errorData: ErrorData = {status: 422, message: "Missing parameter answers"};
 
             throw new Error(JSON.stringify(errorData));
         }
 
-        // Malformed access token
-        if (!accessToken.startsWith('Bearer ')) {
-            const errorData: ErrorData = {status: 422, message: "Malformed authorization header"};
+        const scores = computeScores(req.body.answers);
 
-            throw new Error(JSON.stringify(errorData));
+        if (!isAddressInMerkleTree(address)) {
+
+            addAddressToMerkleTree(address);
         }
 
-        const cleanedAccessToken = accessToken.split(" ")[1];
+        const merkleTree = generateMerkleTree();
 
-        jwt.verify(cleanedAccessToken, process.env.APP_SECRET);
+        await updateScores(merkleTree.getHexRoot(), address, scores.total, scores.time);
 
-        res.status(200).json({message: 'ok'});
+        res.status(201).json({scores});
     } catch (e) {
+        console.log(e); // Logging
+
         if (e.message.includes("invalid signature") || e.message.includes("jwt malformed")) {
             const errorData: ErrorData = {status: 401, message: "Unauthorized"};
 

@@ -24,12 +24,12 @@ function initiateProvider() {
     }
 }
 
-async function updateMerkleRoot(merkleRoot: string) {
+async function updateScores(merkleRoot: string, address: string, lastScore: number, lastTime: number) {
     if (!contract) {
         throw new Error("contract not instanced");
     }
 
-    await contract.setMerkleRoot(merkleRoot);
+    await contract.updateScores(merkleRoot, address, lastScore, lastTime);
 }
 
-export {initiateProvider, updateMerkleRoot}
+export {initiateProvider, updateScores}

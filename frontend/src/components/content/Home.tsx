@@ -3,8 +3,9 @@ import {AppContext} from "../../App";
 import {connectWallet, getSupportedChainLabel, isChainIdSupported} from "../../utils/ProviderUtils";
 import {fetchApi, formatAddressWithChecksum} from "../../utils/Utils";
 import {getAccessTokenInLocalStorage, saveAccessTokenInLocalStorage, signMessage} from "../../utils/AuthUtils";
+import {ContentComponentProps} from "../../types/ContentComponents";
 
-function Home() {
+function Home({changeComponentToDisplay}: ContentComponentProps) {
 
     const {provider, contract, address, chainId, hasValidToken, changeAddress, changeHasValidToken} = useContext(AppContext);
 
@@ -61,7 +62,11 @@ function Home() {
             console.error(e);
         }
 
-    }, [contract])
+    }, [contract]);
+
+    const startQuiz = useCallback(() => {
+        changeComponentToDisplay('quiz');
+    }, [changeComponentToDisplay]);
 
 
     if (provider === undefined) {
@@ -154,7 +159,7 @@ function Home() {
                 <div className="home-upper">
                     <div className="home-upper-box">
                         <p className="home-upper-box-title">Mon test technique</p>
-                        <button className="btn primary" onClick={testToken}>Demarrer</button>
+                        <button className="btn primary" onClick={startQuiz}>Demarrer</button>
                         <button onClick={testProof}>MINT TEST</button>
                     </div>
                 </div>
