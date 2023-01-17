@@ -46,6 +46,8 @@ function Quiz({changeComponentToDisplay}: ContentComponentProps) {
 
         setLastAnswerAt(timeLeft);
 
+        setSelectedAnswer(null);
+
         if (currentQuestionIndex !== quiz.length - 1) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
 
