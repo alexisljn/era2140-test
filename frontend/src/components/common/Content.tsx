@@ -3,6 +3,7 @@ import {ContentComponents} from "../../types/ContentComponents";
 import {Home} from "../content/Home";
 import {Quiz} from "../content/Quiz";
 import {Timeout} from "../content/Timeout";
+import {Scores} from "../content/Scores";
 
 function Content() {
 
@@ -24,6 +25,10 @@ function Content() {
         case "timeout":
             return (
                 <Timeout changeComponentToDisplay={changeComponentToDisplay}/>
+            )
+        case "scores":
+            return (
+                <Scores changeComponentToDisplay={changeComponentToDisplay}/>
             )
     }
 }
