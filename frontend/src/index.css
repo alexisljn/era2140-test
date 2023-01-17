@@ -73,6 +73,7 @@ code {
 
 
     background-color: rgba(28, 28, 28, 0.8);
+    backdrop-filter: blur(4px);
     color: white;
 
     padding: 30px 120px;
@@ -92,6 +93,7 @@ code {
 
 .home-lower-box {
     background-color: rgba(28, 28, 28, 0.8);
+    backdrop-filter: blur(4px);
     color: white;
 
     padding: 30px 90px;
@@ -236,6 +238,8 @@ code {
 
 .timeout-box {
     background-color: rgba(100, 100, 100, 0.3);
+    backdrop-filter: blur(4px);
+
     padding: 10px 250px;
     border-radius: 10px;
 
@@ -260,6 +264,82 @@ code {
 
 .timeout-box-button {
     margin-bottom: 40px;
+}
+
+.scores {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+
+    height: 70%;
+    padding-top: 100px;
+}
+
+.scores-box {
+    box-sizing: border-box;
+    width: 45%;
+    border-radius: 10px;
+    padding: 10px 0;
+
+    background-color: rgba(100, 100, 100, 0.5);
+    color: white;
+    backdrop-filter: blur(4px);
+}
+
+.box-mint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.box-mint-emoji {
+    font-size: 30px;
+}
+
+.box-mint-title {
+    font-size: 25px;
+}
+
+.box-mint-bravo {
+    font-size: 70px;
+    font-weight: 500;
+    color: #21e6ca;
+    -webkit-text-stroke: 1px black;
+}
+
+.box-details {
+    padding: 20px 40px;
+}
+
+.box-details-title {
+    font-size: 20px;
+}
+
+.box-details-answers {
+    background-color: rgba(0, 0, 0, 0.2);
+
+    padding: 10px 15px;
+    margin-top: 20px;
+
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.answer-line {
+    display: grid;
+    grid-template-columns: 20fr 1fr;
+}
+
+.good-answer {
+    color: #4be815;
+}
+
+.bad-answer {
+    color: #d51515;
 }
 
 .base-bg {
