@@ -14,3 +14,15 @@ export interface Answer {
     label: string
     answeredIn: number;
 }
+
+export interface ScoresType {
+    total: number;
+    time: number;
+    answers: Array<ScoreAnswer>;
+}
+
+export interface ScoreAnswer {
+    question: string;
+    hadRight: boolean;
+    answeredIn: number;
+}
