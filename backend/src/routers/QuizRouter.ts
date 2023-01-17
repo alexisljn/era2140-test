@@ -1,7 +1,9 @@
-import e, {Router} from "express";
+import {Router} from "express";
 import {ErrorData} from "../types/CommonTypes";
-import jwt from "jsonwebtoken";
 import {computeScores, generateQuiz} from "../managers/QuizManager";
+import {verifyAccessToken} from "../utils/AuthUtils";
+import {addAddressToMerkleTree, generateMerkleTree, isAddressInMerkleTree} from "../managers/MerkleManager";
+import {updateScores} from "../utils/ProviderUtils";
 
 const quizRouter: Router = Router();
 
@@ -15,27 +17,13 @@ quizRouter
             next(e);
         }
     })
-    .post('/', (req, res, next) => {
+    .post('/', async (req, res, next) => {
     try {
         const accessToken = req.get('Authorization');
 
-        // No access token
-        if (!accessToken) {
-            const errorData: ErrorData = {status: 401, message: "Unauthorized"};
+        const accessTokenPayload = verifyAccessToken(accessToken);
 
-            throw new Error(JSON.stringify(errorData));
-        }
-
-        // Malformed access token
-        if (!accessToken.startsWith('Bearer ')) {
-            const errorData: ErrorData = {status: 422, message: "Malformed authorization header"};
-
-            throw new Error(JSON.stringify(errorData));
-        }
-
-        const cleanedAccessToken = accessToken.split(" ")[1];
-
-        jwt.verify(cleanedAccessToken, process.env.APP_SECRET);
+        const address = accessTokenPayload['user'];
 
         if (!req.body.hasOwnProperty('answers')) {
             const errorData: ErrorData = {status: 422, message: "Missing parameter answers"};
@@ -45,12 +33,19 @@ quizRouter
 
         const scores = computeScores(req.body.answers);
 
-        console.log("scores", scores);
+        if (!isAddressInMerkleTree(address)) {
 
-        // Update smart contract
+            addAddressToMerkleTree(address);
+        }
 
-        res.status(200).json({message: 'ok'});
+        const merkleTree = generateMerkleTree();
+
+        await updateScores(merkleTree.getHexRoot(), address, scores.total, scores.time);
+
+        res.status(201).json({scores});
     } catch (e) {
+        console.log(e); // Logging
+
         if (e.message.includes("invalid signature") || e.message.includes("jwt malformed")) {
             const errorData: ErrorData = {status: 401, message: "Unauthorized"};
 
