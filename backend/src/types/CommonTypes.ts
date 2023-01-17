@@ -13,7 +13,13 @@ export interface Answer {
     answeredIn: number;
 }
 
-export interface Score {
+export interface Scores {
+    total: number;
+    time: number;
+    answers: Array<ScoreAnswer>;
+}
+
+export interface ScoreAnswer {
     question: string;
     hadRight: boolean;
     answeredIn: number;
