@@ -1,6 +1,6 @@
 import {ContentComponentProps} from "../../types/ContentComponents";
 import {useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
-import {fetchApi} from "../../utils/Utils";
+import {fetchApi, setItemToLocalStorage} from "../../utils/Utils";
 import {Answer, Question} from "../../types/CommonTypes";
 import {AppContext} from "../../App";
 import {getAccessTokenInLocalStorage} from "../../utils/AuthUtils";
@@ -10,7 +10,7 @@ function Quiz({changeComponentToDisplay}: ContentComponentProps) {
     const {changeBackgroundClass, address} = useContext(AppContext);
 
     const time = useMemo(() => {
-        return 50000;
+        return 120;
     }, []);
 
     const [quiz, setQuiz] = useState<Array<Question>>([]);
@@ -56,7 +56,7 @@ function Quiz({changeComponentToDisplay}: ContentComponentProps) {
 
         window.clearInterval(timer.current!);
 
-        const response = await fetchApi(
+        const {scores} = await fetchApi(
             'quiz',
             'POST',
             [
@@ -66,8 +66,9 @@ function Quiz({changeComponentToDisplay}: ContentComponentProps) {
             {answers: copy}
         )
 
-        //TODO something with response and change component;
-        console.log("on a fetch l'api", response);
+        setItemToLocalStorage('scores', scores);
+
+        changeComponentToDisplay('scores');
 
     }, [answers, selectedAnswer, timeLeft, lastAnswerAt, currentQuestionIndex, address]);
 
