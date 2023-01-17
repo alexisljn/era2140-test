@@ -15,6 +15,17 @@ contract QuizResult is Ownable, ERC721 {
 
     bytes32 public merkleRoot;
 
+    struct Scores {
+        uint8 lastScore;
+        uint8 bestScore;
+        uint8 lastTime;
+        uint8 bestTime;
+    }
+
+    mapping(address => Scores) public scores;
+
+    event ScoresUpdated(address player);
+
     constructor(
         string memory name_,
         string memory symbol_,
@@ -28,7 +39,27 @@ contract QuizResult is Ownable, ERC721 {
         return _baseUri;
     }
 
-    function setMerkleRoot(bytes32 merkleRoot_) external onlyOwner {
+    function updateScores(bytes32 merkleRoot_, address player, uint8 lastScore, uint8 lastTime) external onlyOwner {
+        setMerkleRoot(merkleRoot_);
+
+        Scores storage score = scores[player];
+
+        score.lastScore = lastScore;
+
+        if (lastScore > score.bestScore) {
+            score.bestScore = lastScore;
+        }
+
+        score.lastTime = lastTime;
+
+        if (score.bestTime == 0 || lastTime < score.bestTime) {
+            score.bestTime = lastTime;
+        }
+
+        emit ScoresUpdated(player);
+    }
+
+    function setMerkleRoot(bytes32 merkleRoot_) internal onlyOwner {
         merkleRoot = merkleRoot_;
     }
 
