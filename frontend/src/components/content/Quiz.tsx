@@ -1,14 +1,70 @@
 import {ContentComponentProps} from "../../types/ContentComponents";
-import {useContext, useEffect, useState} from "react";
+import {useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
 import {fetchApi} from "../../utils/Utils";
-import {Question} from "../../types/CommonTypes";
+import {Answer, Question} from "../../types/CommonTypes";
 import {AppContext} from "../../App";
+import {getAccessTokenInLocalStorage} from "../../utils/AuthUtils";
 
 function Quiz({changeComponentToDisplay}: ContentComponentProps) {
 
-    const {changeBackgroundClass} = useContext(AppContext);
+    const {changeBackgroundClass, address} = useContext(AppContext);
 
-    const [quiz, setQuiz] = useState<Array<Question>>([])
+    const time = useMemo(() => {
+        return 50000;
+    }, []);
+
+    const [quiz, setQuiz] = useState<Array<Question>>([]);
+
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
+
+    const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+
+    const [answers, setAnswers] = useState<Array<Answer>>([]);
+
+    const [lastAnswerAt, setLastAnswerAt] = useState<number>(time);
+
+    const [timeLeft, setTimeLeft] = useState(time);
+
+    const timer = useRef<number | null>(null);
+
+    const onSelectAnswer = useCallback((answer: string) => {
+        if (selectedAnswer === answer) {
+            setSelectedAnswer(null);
+
+            return;
+        }
+
+        setSelectedAnswer(answer);
+    }, [selectedAnswer]);
+
+    const onValidateAnswer = useCallback(async () => {
+        const copy = [...answers];
+
+        copy.push({label: selectedAnswer!, answeredIn: lastAnswerAt - timeLeft});
+
+        setAnswers(copy);
+
+        setLastAnswerAt(timeLeft);
+
+        if (currentQuestionIndex !== quiz.length - 1) {
+            setCurrentQuestionIndex(currentQuestionIndex + 1);
+
+            return
+        }
+
+        window.clearInterval(timer.current!);
+
+        const response = await fetchApi(
+            'quiz',
+            'POST',
+            [{name: 'Authorization', value: `Bearer ${getAccessTokenInLocalStorage(address!)}`}],
+            copy
+        )
+
+        //TODO something with response and change component;
+        console.log("on a fetch l'api", response);
+
+    }, [answers, selectedAnswer, timeLeft, lastAnswerAt, currentQuestionIndex, address]);
 
     useEffect(() => {
         (async () => {
@@ -19,10 +75,28 @@ function Quiz({changeComponentToDisplay}: ContentComponentProps) {
     }, [])
 
     useEffect(() => {
-        if (quiz.length === 0) return;
+        if (quiz.length === 0 || timer.current) return;
 
-        console.log("quiz", quiz);
+        timer.current = window.setInterval(() => {
+            setTimeLeft((prevState) => prevState - 1)
+        }, 1000);
+
+        return () => {
+            if (timer.current) {
+                window.clearInterval(timer.current!);
+            }
+        }
+
     }, [quiz]);
+
+    useEffect(() => {
+        if (timeLeft === 0 && timer.current) {
+            window.clearInterval(timer.current!);
+
+            changeComponentToDisplay('timeout');
+        }
+
+    }, [timeLeft])
 
     if (quiz.length === 0) {
         return (
@@ -31,7 +105,36 @@ function Quiz({changeComponentToDisplay}: ContentComponentProps) {
     }
 
     return (
-        <div>le quiz !</div>
+        <>
+            <div className="quiz">
+                <div className="timer"><span className="time-left">{timeLeft}</span></div>
+                <div className="questions">
+                    <div className="question">{quiz[currentQuestionIndex].content}</div>
+                    <div className="answers">
+                        {quiz[currentQuestionIndex].answers.map((answer, index) => (
+                            <div className="answer" onClick={() => onSelectAnswer(answer.label)} key={index}>
+                                <div className="answer-label">{answer.label}</div>
+                                <div className="answer-check">
+                                    {selectedAnswer === answer.label
+                                        ? <i className="fa-regular fa-square-check"></i>
+                                        : <i className="fa-regular fa-square"></i>
+                                    }
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="answers-button">
+                        <button
+                            className={selectedAnswer !== null ? 'btn primary' : "btn disabled"}
+                            disabled={selectedAnswer === null}
+                            onClick={onValidateAnswer}
+                        >
+                            Valider
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </>
     )
 
 }
