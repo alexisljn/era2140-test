@@ -9,3 +9,8 @@ export interface Question {
     content: string;
     answers: Array<{label: string}>
 }
+
+export interface Answer {
+    label: string
+    answeredIn: number;
+}
