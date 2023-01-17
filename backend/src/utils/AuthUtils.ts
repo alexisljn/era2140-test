@@ -1,6 +1,6 @@
 import {ethers} from "ethers";
 import {formatAddressWithChecksum} from "./Utils";
-import jwt from "jsonwebtoken";
+import jwt, {JwtPayload} from "jsonwebtoken";
 import {ErrorData} from "../types/CommonTypes";
 
 
@@ -21,7 +21,7 @@ function generateAccessToken(address: string) {
     return jwt.sign({user: address}, process.env.APP_SECRET, {expiresIn: '100 years'}); // Never expires for purpose
 }
 
-function verifyToken(accessToken: string | undefined) {
+function verifyAccessToken(accessToken: string | undefined): JwtPayload | string {
     // No access token
     if (!accessToken) {
         const errorData: ErrorData = {status: 401, message: "Unauthorized"};
@@ -38,7 +38,7 @@ function verifyToken(accessToken: string | undefined) {
 
     const cleanedAccessToken = accessToken.split(" ")[1];
 
-    jwt.verify(cleanedAccessToken, process.env.APP_SECRET);
+    return jwt.verify(cleanedAccessToken, process.env.APP_SECRET);
 }
 
-export {generateMessageToSign, checkSignedMessage, generateAccessToken, verifyToken}
+export {generateMessageToSign, checkSignedMessage, generateAccessToken, verifyAccessToken}
