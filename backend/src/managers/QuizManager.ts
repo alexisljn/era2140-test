@@ -1,4 +1,4 @@
-import {Question} from "../types/CommonTypes";
+import {Answer, Question, Score} from "../types/CommonTypes";
 
 const quiz: Array<Question> = [
     {
@@ -108,7 +108,7 @@ const quiz: Array<Question> = [
     }
 ]
 
-function generateQuiz() {
+function generateQuiz(): Array<Partial<Question>> {
     const copy = JSON.parse(JSON.stringify(quiz));
 
     return copy.map(question => {
@@ -120,4 +120,24 @@ function generateQuiz() {
     });
 }
 
-export {generateQuiz}
+function computeScores(answers: Array<Answer>): Array<Score> {
+    const scores: Array<Score> = [];
+
+    for (let i = 0; i < answers.length; i++) {
+        const goodAnswer = getGoodAnswer(quiz[i]);
+
+        scores.push({
+            question: quiz[i].content,
+            hadRight: answers[i].label === goodAnswer.label,
+            answeredIn: answers[i].answeredIn
+        });
+    }
+
+    return scores;
+}
+
+function getGoodAnswer(question: Question) {
+    return question.answers.find(answer => answer.isRight);
+}
+
+export {generateQuiz, computeScores}
