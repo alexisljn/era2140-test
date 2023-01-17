@@ -277,6 +277,11 @@ code {
     background-size: cover;
 }
 
+.scores-bg {
+    background: url('../public/scores-bg.jpg') center center no-repeat;
+    background-size: cover;
+}
+
 .loading {
     color: white;
     margin: 10px 0 0 15px
