@@ -1,7 +1,7 @@
 import e, {Router} from "express";
 import {ErrorData} from "../types/CommonTypes";
 import jwt from "jsonwebtoken";
-import {generateQuiz} from "../managers/QuizManager";
+import {computeScores, generateQuiz} from "../managers/QuizManager";
 
 const quizRouter: Router = Router();
 
@@ -36,6 +36,18 @@ quizRouter
         const cleanedAccessToken = accessToken.split(" ")[1];
 
         jwt.verify(cleanedAccessToken, process.env.APP_SECRET);
+
+        if (!req.body.hasOwnProperty('answers')) {
+            const errorData: ErrorData = {status: 422, message: "Missing parameter answers"};
+
+            throw new Error(JSON.stringify(errorData));
+        }
+
+        const scores = computeScores(req.body.answers);
+
+        console.log("scores", scores);
+
+        // Update smart contract
 
         res.status(200).json({message: 'ok'});
     } catch (e) {

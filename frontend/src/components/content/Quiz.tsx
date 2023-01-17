@@ -57,8 +57,11 @@ function Quiz({changeComponentToDisplay}: ContentComponentProps) {
         const response = await fetchApi(
             'quiz',
             'POST',
-            [{name: 'Authorization', value: `Bearer ${getAccessTokenInLocalStorage(address!)}`}],
-            copy
+            [
+                {name: 'Authorization', value: `Bearer ${getAccessTokenInLocalStorage(address!)}`},
+                {name: 'Content-Type', value: 'application/json'}
+            ],
+            {answers: copy}
         )
 
         //TODO something with response and change component;
