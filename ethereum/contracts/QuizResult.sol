@@ -40,7 +40,10 @@ contract QuizResult is Ownable, ERC721 {
     }
 
     function updateScores(bytes32 merkleRoot_, address player, uint8 lastScore, uint8 lastTime) external onlyOwner {
-        setMerkleRoot(merkleRoot_);
+
+        if (merkleRoot_ != merkleRoot) {
+            setMerkleRoot(merkleRoot_);
+        }
 
         Scores storage score = scores[player];
 
