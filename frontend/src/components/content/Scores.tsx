@@ -29,7 +29,7 @@ function Scores() {
                 }
                 break;
         }
-    }, [address]);
+    }, [contract, address]);
 
     const displayModal = useCallback(() => {
         setShowModal(true);
@@ -55,7 +55,7 @@ function Scores() {
         return () => {
             window.removeEventListener(CONTRACT_EVENT, handleLocallyContractEvents);
         }
-    }, []);
+    }, [changeBackgroundClass, handleLocallyContractEvents]);
 
     useEffect(() => {
         (async () => {
@@ -63,7 +63,7 @@ function Scores() {
 
             setBestTime(scoresOnChain['bestTime']);
         })();
-    }, [address]);
+    }, [address, contract]);
 
     if (!scores) {
         return (

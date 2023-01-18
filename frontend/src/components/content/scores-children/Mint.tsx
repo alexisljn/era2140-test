@@ -33,7 +33,7 @@ function Mint({displayModal, hideModal}: ModalProps) {
                     setMintTokenId(tokenId);
                 }
         }
-    }, [address]);
+    }, [address, hideModal]);
 
     const onMint = useCallback(async () => {
         try {
@@ -47,7 +47,7 @@ function Mint({displayModal, hideModal}: ModalProps) {
         } catch (e: any) {
             console.error(e) // Logging
         }
-    }, [contract, merkleProof])
+    }, [contract, merkleProof, displayModal]);
 
     useEffect(() => {
 
@@ -64,7 +64,7 @@ function Mint({displayModal, hideModal}: ModalProps) {
         return () => {
             window.removeEventListener(CONTRACT_EVENT, handleLocallyContractEvents);
         }
-    }, [])
+    }, [handleLocallyContractEvents]);
 
 
     if (mintStatus === 'wait') {
