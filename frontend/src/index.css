@@ -73,6 +73,7 @@ code {
 
 
     background-color: rgba(28, 28, 28, 0.8);
+    backdrop-filter: blur(4px);
     color: white;
 
     padding: 30px 120px;
@@ -92,10 +93,24 @@ code {
 
 .home-lower-box {
     background-color: rgba(28, 28, 28, 0.8);
+    backdrop-filter: blur(4px);
     color: white;
 
     padding: 30px 90px;
     border-radius: 15px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.home-ranking {
+    font-size: 20px;
+}
+
+.home-ranking-score {
+    font-size: 25px;
 }
 
 .btn {
@@ -173,9 +188,6 @@ code {
 
 .questions {
     grid-area: questions;
-    /*display: flex;*/
-    /*flex-direction: column;*/
-    /*justify-content: space-around;*/
 
     padding-top: 60px;
 }
@@ -236,6 +248,8 @@ code {
 
 .timeout-box {
     background-color: rgba(100, 100, 100, 0.3);
+    backdrop-filter: blur(4px);
+
     padding: 10px 250px;
     border-radius: 10px;
 
@@ -262,6 +276,82 @@ code {
     margin-bottom: 40px;
 }
 
+.scores {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+
+    height: 70%;
+    padding-top: 100px;
+}
+
+.scores-box {
+    box-sizing: border-box;
+    width: 45%;
+    border-radius: 10px;
+    padding: 10px 0;
+
+    background-color: rgba(100, 100, 100, 0.5);
+    color: white;
+    backdrop-filter: blur(4px);
+}
+
+.box-mint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.box-mint-emoji {
+    font-size: 30px;
+}
+
+.box-mint-title {
+    font-size: 25px;
+}
+
+.box-mint-bravo {
+    font-size: 70px;
+    font-weight: 500;
+    color: #21e6ca;
+    -webkit-text-stroke: 1px black;
+}
+
+.box-details {
+    padding: 20px 40px;
+}
+
+.box-details-title {
+    font-size: 20px;
+}
+
+.box-details-answers {
+    background-color: rgba(0, 0, 0, 0.2);
+
+    padding: 10px 15px;
+    margin-top: 20px;
+
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.answer-line {
+    display: grid;
+    grid-template-columns: 20fr 1fr;
+}
+
+.text-success {
+    color: #4be815;
+}
+
+.text-danger {
+    color: #d51515;
+}
+
 .base-bg {
     background: url('../public/base-bg.jpg') center center no-repeat;
     background-size: cover;
@@ -285,4 +375,97 @@ code {
 .loading {
     color: white;
     margin: 10px 0 0 15px
+}
+
+.modal-background {
+    z-index: 10;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 35px); /* 35px = header size (first row size of .grid grid) */
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal {
+    padding: 15px 20px;
+    background-color: #ffffff;
+    color: #232323;
+    border-radius: 7px;
+    width: 30%;
+    position: relative;
+    top: -100px;
+    z-index: 10;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-cross {
+    padding: 3px 6px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: #dc3545;
+    color: white;
+    transition: background-color 0.1s ease-out;
+}
+.modal-cross:hover {
+    background-color: #f33d3d;
+}
+
+.modal-cross:focus {
+    outline: none;
+}
+
+.modal-title {
+    flex-grow: 2;
+    margin: 0;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: 500;
+}
+
+.modal-spinner {
+    display: flex;
+    justify-content: center;
+}
+
+.modal-text {
+    margin-top: 20px;
+    text-align: center;
+    font-style: italic;
+}
+
+/* Not my classes */
+
+.lds-dual-ring {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+}
+.lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 55px;
+    height: 55px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 6px solid #ca0e0e;
+    border-color: #5f5f5f transparent #5f5f5f transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

@@ -28,7 +28,7 @@ function Content() {
             )
         case "scores":
             return (
-                <Scores changeComponentToDisplay={changeComponentToDisplay}/>
+                <Scores/>
             )
     }
 }

@@ -47,16 +47,16 @@ contract QuizResult is Ownable, ERC721 {
 
         Scores storage score = scores[player];
 
+        score.lastTime = lastTime;
+
+        if (score.bestTime == 0 || (lastTime < score.bestTime && lastScore >= score.bestScore)) {
+            score.bestTime = lastTime;
+        }
+
         score.lastScore = lastScore;
 
         if (lastScore > score.bestScore) {
             score.bestScore = lastScore;
-        }
-
-        score.lastTime = lastTime;
-
-        if (score.bestTime == 0 || lastTime < score.bestTime) {
-            score.bestTime = lastTime;
         }
 
         emit ScoresUpdated(player);
@@ -66,11 +66,15 @@ contract QuizResult is Ownable, ERC721 {
         merkleRoot = merkleRoot_;
     }
 
-    function mint(bytes32[] calldata merkleProof_) external view returns(uint8) {
+    function mint(bytes32[] calldata merkleProof_) external {
         bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
 
         require(MerkleProof.verify(merkleProof_, merkleRoot, leaf), 'Not allowed to mint token');
 
-        return 10;
+        uint256 tokenId = _tokenIds.current();
+
+        _tokenIds.increment();
+
+        super._safeMint(msg.sender, tokenId);
     }
 }

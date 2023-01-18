@@ -9,6 +9,7 @@ import {
 import {Header} from "./components/common/Header";
 import {Content} from "./components/common/Content";
 import {getContract} from "./utils/ContractUtils";
+import {cleanContractEvents, listenContractEvents} from "./events/ContractEventsManager";
 
 interface AppContextInterface {
     provider: providers.Web3Provider | undefined | null;
@@ -105,6 +106,17 @@ function App() {
             setContract(getContract(provider));
         })();
     }, [provider]);
+
+    useEffect(() => {
+        if (!contract) return;
+
+        listenContractEvents(contract);
+
+        return () => {
+            cleanContractEvents(contract);
+        }
+
+    }, [contract])
 
     useEffect(() => {
         if (!address || !chainId) {
