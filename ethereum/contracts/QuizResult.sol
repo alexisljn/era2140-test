@@ -47,16 +47,16 @@ contract QuizResult is Ownable, ERC721 {
 
         Scores storage score = scores[player];
 
+        score.lastTime = lastTime;
+
+        if (score.bestTime == 0 || (lastTime < score.bestTime && lastScore >= score.bestScore)) {
+            score.bestTime = lastTime;
+        }
+
         score.lastScore = lastScore;
 
         if (lastScore > score.bestScore) {
             score.bestScore = lastScore;
-        }
-
-        score.lastTime = lastTime;
-
-        if (score.bestTime == 0 || lastTime < score.bestTime) {
-            score.bestTime = lastTime;
         }
 
         emit ScoresUpdated(player);
