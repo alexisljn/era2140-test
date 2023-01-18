@@ -7,7 +7,7 @@ let wallet: Signer | null = null;
 
 let contract: Contract | null = null;
 
-function initiateProvider() {
+function initializeProvider() {
     try {
         String(process.env.NODE_ENV === "development")
             ? provider = ethers.getDefaultProvider(String(process.env.NETWORK_NAME))
@@ -32,4 +32,4 @@ async function updateScores(merkleRoot: string, address: string, lastScore: numb
     await contract.updateScores(merkleRoot, address, lastScore, lastTime);
 }
 
-export {initiateProvider, updateScores}
+export {initializeProvider, updateScores}
