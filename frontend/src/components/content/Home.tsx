@@ -1,13 +1,16 @@
-import {useCallback, useContext} from "react";
+import {useCallback, useContext, useEffect, useState} from "react";
 import {AppContext} from "../../App";
 import {connectWallet, getSupportedChainLabel, isChainIdSupported} from "../../utils/ProviderUtils";
 import {fetchApi, formatAddressWithChecksum} from "../../utils/Utils";
-import {getAccessTokenInLocalStorage, saveAccessTokenInLocalStorage, signMessage} from "../../utils/AuthUtils";
+import {saveAccessTokenInLocalStorage, signMessage} from "../../utils/AuthUtils";
 import {ContentComponentProps} from "../../types/ContentComponents";
+import {getOnChainScores} from "../../utils/ContractUtils";
 
 function Home({changeComponentToDisplay}: ContentComponentProps) {
 
     const {provider, contract, address, chainId, hasValidToken, changeAddress, changeHasValidToken} = useContext(AppContext);
+
+    const [bestScore, setBestScore] = useState<number>(0);
 
     const onConnectWallet = useCallback(async () => {
         try {
@@ -43,6 +46,17 @@ function Home({changeComponentToDisplay}: ContentComponentProps) {
     const startQuiz = useCallback(() => {
         changeComponentToDisplay('quiz');
     }, [changeComponentToDisplay]);
+
+    useEffect(() => {
+        if (!contract || !address) return;
+
+        (async () => {
+           const scores = await getOnChainScores(contract, address);
+
+           setBestScore(scores['bestScore']);
+        })()
+
+    }, [contract, address]);
 
     if (provider === undefined) {
         return (
@@ -98,11 +112,6 @@ function Home({changeComponentToDisplay}: ContentComponentProps) {
                             <button className="btn primary" onClick={onConnectWallet}>Connect wallet</button>
                         </div>
                     </div>
-                    <div className="home-lower">
-                        <div className="home-lower-box">
-                            Classement TODO
-                        </div>
-                    </div>
                 </div>
             </>
         )
@@ -120,7 +129,9 @@ function Home({changeComponentToDisplay}: ContentComponentProps) {
                     </div>
                     <div className="home-lower">
                         <div className="home-lower-box">
-                            Classement TODO
+                            <div className="home-ranking">🏆</div>
+                            <div className="home-ranking">Meilleur score</div>
+                            <div className="home-ranking-score">{bestScore}/5</div>
                         </div>
                     </div>
                 </div>
@@ -139,7 +150,9 @@ function Home({changeComponentToDisplay}: ContentComponentProps) {
                 </div>
                 <div className="home-lower">
                     <div className="home-lower-box">
-                        Classement TODO
+                        <div className="home-ranking">🏆</div>
+                        <div className="home-ranking">Meilleur score</div>
+                        <div className="home-ranking-score">{bestScore}/5</div>
                     </div>
                 </div>
             </div>

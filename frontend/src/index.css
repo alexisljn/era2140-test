@@ -98,6 +98,19 @@ code {
 
     padding: 30px 90px;
     border-radius: 15px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.home-ranking {
+    font-size: 20px;
+}
+
+.home-ranking-score {
+    font-size: 25px;
 }
 
 .btn {
@@ -175,9 +188,6 @@ code {
 
 .questions {
     grid-area: questions;
-    /*display: flex;*/
-    /*flex-direction: column;*/
-    /*justify-content: space-around;*/
 
     padding-top: 60px;
 }
@@ -334,11 +344,11 @@ code {
     grid-template-columns: 20fr 1fr;
 }
 
-.good-answer {
+.text-success {
     color: #4be815;
 }
 
-.bad-answer {
+.text-danger {
     color: #d51515;
 }
 
@@ -368,11 +378,12 @@ code {
 }
 
 .modal-background {
+    z-index: 10;
     position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: calc(100vh - 35px); /* 35px = header size (first row size of .grid grid) */
     width: 100%;
     background-color: rgba(0, 0, 0, 0.5);
 }
@@ -385,6 +396,7 @@ code {
     width: 30%;
     position: relative;
     top: -100px;
+    z-index: 10;
 }
 
 .modal-header {
@@ -429,4 +441,31 @@ code {
     margin-top: 20px;
     text-align: center;
     font-style: italic;
+}
+
+/* Not my classes */
+
+.lds-dual-ring {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+}
+.lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 55px;
+    height: 55px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 6px solid #ca0e0e;
+    border-color: #5f5f5f transparent #5f5f5f transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
