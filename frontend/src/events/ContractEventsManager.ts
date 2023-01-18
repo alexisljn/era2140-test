@@ -10,8 +10,15 @@ function cleanContractEvents(contract: Contract) {
     contract.off('ScoresUpdated', scoresUpdatedHandler);
 }
 
-function scoresUpdatedHandler() {
+function scoresUpdatedHandler(player: string) {
+    const event = new CustomEvent(CONTRACT_EVENT, {
+        detail: {
+            type: 'scoresUpdated',
+            value: player
+        }
+    });
 
+    window.dispatchEvent(event);
 }
 
-export {listenContractEvents, cleanContractEvents}
+export {listenContractEvents, cleanContractEvents, CONTRACT_EVENT}
