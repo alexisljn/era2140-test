@@ -1,4 +1,3 @@
-import {ContentComponentProps} from "../../types/ContentComponents";
 import {useCallback, useContext, useEffect, useState} from "react";
 import {AppContext} from "../../App";
 import {deleteItemFromLocalStorage, getItemFromLocalStorage} from "../../utils/Utils";
@@ -8,7 +7,7 @@ import {CONTRACT_EVENT} from "../../events/ContractEventsManager";
 import {Mint} from "./scores-children/Mint";
 import {Modal} from "../common/Modal";
 
-function Scores({changeComponentToDisplay}: ContentComponentProps) {
+function Scores() {
 
     const {contract, address,changeBackgroundClass} = useContext(AppContext);
 
