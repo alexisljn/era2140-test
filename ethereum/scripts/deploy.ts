@@ -3,7 +3,7 @@ import {ethers} from "hardhat";
 async function main() {
     const QuizResult = await ethers.getContractFactory("QuizResult");
 
-    const quizResult = await QuizResult.deploy("Quiz Result", "QZR", "https://firebasestorage.googleapis.com/v0/b/era2140-test.appspot.com/o/prod%2F");
+    const quizResult = await QuizResult.deploy("Quiz Result", "QZR", "https://firebasestorage.googleapis.com/v0/b/web3-test-5cede.appspot.com/o/prod%2F");
 
     await quizResult.deployed();
 

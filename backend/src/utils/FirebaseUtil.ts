@@ -3,7 +3,7 @@ import {BigNumber} from "ethers";
 import {getAuth, signInAnonymously} from "firebase/auth";
 import {getDownloadURL, getStorage, ref, uploadString} from "firebase/storage";
 
-function initializeFirebase() {
+async function initializeFirebase() {
     const config = {
         apiKey: process.env.FIREBASE_API_KEY,
         authDomain: process.env.FIREBASE_AUTH_DOMAIN,
@@ -14,11 +14,11 @@ function initializeFirebase() {
     }
 
     initializeApp(config);
+
+    await signInFirebase();
 }
 
 async function postMetadata(metadata: string, tokenId: BigNumber) {
-    await signInFirebase();
-
     const storage = getStorage();
 
     const bucket = process.env.NODE_ENV === 'development' ? 'dev' : 'prod';
@@ -29,8 +29,6 @@ async function postMetadata(metadata: string, tokenId: BigNumber) {
 }
 
 async function generateMetadata(score: number, time: number): Promise<string> {
-    await signInFirebase();
-
     const storage = getStorage();
 
     const badgeRef = ref(storage,`img/badge-${score}.png`);

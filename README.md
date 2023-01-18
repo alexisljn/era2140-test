@@ -1,6 +1,6 @@
-# ERA2140 Technical test
+# Web3 Technical test
 
-This project is a technical test for a job offer at [ERA2140](https://www.era2140.com/).
+This project is a technical test for a job offer for a French web3 venture studio.
 
 I had to write a frontend, a backend and a smart contract to create kind of
 a trivia game where user can mint their score at the end of the quiz.

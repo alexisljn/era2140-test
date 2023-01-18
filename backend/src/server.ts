@@ -7,8 +7,12 @@ import {initializeProvider} from "./utils/ProviderUtils";
 import {initializeFirebase} from "./utils/FirebaseUtil";
 
 dotenv.config();
-initializeFirebase();
-initializeProvider();
+
+(async () => {
+    await initializeFirebase();
+    initializeProvider();
+})();
+
 
 
 const app = express();
