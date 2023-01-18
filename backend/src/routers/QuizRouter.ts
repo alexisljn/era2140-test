@@ -18,7 +18,8 @@ quizRouter
             const quiz = generateQuiz();
 
             res.status(200).json(quiz);
-        } catch (e) {
+        } catch (e: any) {
+            console.error(e) // Server logging
             next(e);
         }
     })
@@ -50,8 +51,8 @@ quizRouter
         await updateScores(merkleTree.getHexRoot(), address, scores.total, scores.time);
 
         res.status(201).json({scores, merkleProof});
-    } catch (e) {
-        console.log(e); // Logging
+    } catch (e: any) {
+        console.error(e) // Server logging
 
         if (e.message.includes("invalid signature") || e.message.includes("jwt malformed")) {
             const errorData: ErrorData = {status: 401, message: "Unauthorized"};

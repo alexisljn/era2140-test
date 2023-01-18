@@ -22,7 +22,7 @@ function initializeProvider() {
         listenToMintEvent(contract);
 
         console.log("Provider, wallet and contract has been successfully initiated"); // Server logging
-    } catch (e) {
+    } catch (e: any) {
         console.error(e) // Server logging
     }
 }
@@ -47,7 +47,7 @@ async function transferHandler(from: string, to: string, tokenId: BigNumber) {
 
         await postMetadata(metadata, tokenId);
     } catch (e) {
-        console.log(e) // Server logging
+        console.error(e) // Server logging
     }
 
 }
