@@ -40,34 +40,9 @@ function Home({changeComponentToDisplay}: ContentComponentProps) {
         }
     }, [provider, address, changeHasValidToken]);
 
-
-    const testToken = useCallback(async () => {
-        const token = getAccessTokenInLocalStorage(address!);
-
-        const response = await fetchApi('quiz', 'POST', [{name: 'Authorization', value: `Bearer ${token}`}])
-
-        console.log(response);
-    }, [address]);
-
-    const testProof = useCallback(async () => {
-        try {
-            await fetchApi(`merkle/root/${address}`);
-
-            const {proof} = await fetchApi(`merkle/proof/${address}`);
-
-            await contract!.mint(proof);
-
-            console.log("good")
-        } catch (e: any) {
-            console.error(e);
-        }
-
-    }, [contract]);
-
     const startQuiz = useCallback(() => {
         changeComponentToDisplay('quiz');
     }, [changeComponentToDisplay]);
-
 
     if (provider === undefined) {
         return (
@@ -160,7 +135,6 @@ function Home({changeComponentToDisplay}: ContentComponentProps) {
                     <div className="home-upper-box">
                         <p className="home-upper-box-title">Mon test technique</p>
                         <button className="btn primary" onClick={startQuiz}>Demarrer</button>
-                        <button onClick={testProof}>MINT TEST</button>
                     </div>
                 </div>
                 <div className="home-lower">
