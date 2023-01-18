@@ -12,7 +12,7 @@ function Timeout({changeComponentToDisplay}: ContentComponentProps) {
 
     useEffect(() => {
         changeBackgroundClass('timeout-bg')
-    }, []);
+    }, [changeBackgroundClass]);
 
     return (
         <div className="timeout">

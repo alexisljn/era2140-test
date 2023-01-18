@@ -71,7 +71,7 @@ function Quiz({changeComponentToDisplay}: ContentComponentProps) {
 
         changeComponentToDisplay('scores');
 
-    }, [answers, selectedAnswer, timeLeft, lastAnswerAt, currentQuestionIndex, address]);
+    }, [answers, selectedAnswer, timeLeft, lastAnswerAt, currentQuestionIndex, address, changeComponentToDisplay, quiz]);
 
     useEffect(() => {
         (async () => {
@@ -79,7 +79,7 @@ function Quiz({changeComponentToDisplay}: ContentComponentProps) {
 
             setQuiz(await fetchApi('quiz'));
         })();
-    }, [])
+    }, [changeBackgroundClass]);
 
     useEffect(() => {
         if (quiz.length === 0 || timer.current) return;
@@ -103,7 +103,7 @@ function Quiz({changeComponentToDisplay}: ContentComponentProps) {
             changeComponentToDisplay('timeout');
         }
 
-    }, [timeLeft])
+    }, [timeLeft, changeComponentToDisplay]);
 
     if (quiz.length === 0) {
         return (

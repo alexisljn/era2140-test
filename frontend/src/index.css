@@ -184,6 +184,8 @@ code {
 
     padding: 5px 40px;
     border-radius: 10px;
+
+    min-width: 40px;
 }
 
 .questions {
@@ -353,7 +355,7 @@ code {
 }
 
 .base-bg {
-    background: url('../public/base-bg.jpg') center center no-repeat;
+    background: url('../public/base-bg.webp') center center no-repeat;
     background-size: cover;
 }
 
@@ -363,12 +365,12 @@ code {
 }
 
 .timeout-bg {
-    background: url('../public/timeout-bg.jpg') center center no-repeat;
+    background: url('../public/timeout-bg.webp') center center no-repeat;
     background-size: cover;
 }
 
 .scores-bg {
-    background: url('../public/scores-bg.jpg') center center no-repeat;
+    background: url('../public/scores-bg.webp') center center no-repeat;
     background-size: cover;
 }
 

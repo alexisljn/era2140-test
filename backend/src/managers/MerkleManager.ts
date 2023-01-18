@@ -15,7 +15,7 @@ function isAddressInMerkleTree(address: string) {
         const formattedAddress = formatAddressWithChecksum(address);
 
         return addresses[formattedAddress];
-    } catch (e) {
+    } catch (e: any) {
         throw new Error('invalid address');
     }
 }
@@ -25,7 +25,7 @@ function addAddressToMerkleTree(address: string) {
         const formattedAddress = formatAddressWithChecksum(address);
 
         addresses[formattedAddress] = true;
-    } catch (e) {
+    } catch (e: any) {
         throw new Error('invalid address');
     }
 }
