@@ -4,19 +4,12 @@ import {ErrorData} from "./types/CommonTypes";
 import dotenv from "dotenv";
 import {quizRouter} from "./routers/QuizRouter";
 import {initializeProvider} from "./utils/ProviderUtils";
-import { getAuth, signInAnonymously } from "firebase/auth";
 import {initializeFirebase} from "./utils/FirebaseUtil";
 
 dotenv.config();
-initializeProvider();
 initializeFirebase();
+initializeProvider();
 
-// const auth = getAuth();
-// signInAnonymously(auth).then((user) => {
-//     console.log("userCred", user)
-// })
-
-// console.log("firebaseApp", firebaseApp)
 
 const app = express();
 const port = 3000
@@ -35,10 +28,6 @@ app.all('*', (req: Request, res: Response, next: NextFunction) => {
 app.options('*', (req: Request, res: Response) => {
     res.status(200).send();
 });
-
-app.get('/test', (req, res, next) => {
-    // Upload firebase
-})
 
 // Routing
 app.use('/auth', authRouter);
