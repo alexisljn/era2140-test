@@ -1,9 +1,10 @@
 import {ContentComponentProps} from "../../types/ContentComponents";
-import {useContext, useEffect, useState} from "react";
+import {useCallback, useContext, useEffect, useState} from "react";
 import {AppContext} from "../../App";
 import {deleteItemFromLocalStorage, getItemFromLocalStorage} from "../../utils/Utils";
 import {ScoresType} from "../../types/CommonTypes";
 import {getOnChainScores} from "../../utils/ContractUtils";
+import {CONTRACT_EVENT} from "../../events/ContractEventsManager";
 
 function Scores({changeComponentToDisplay}: ContentComponentProps) {
 
@@ -13,7 +14,17 @@ function Scores({changeComponentToDisplay}: ContentComponentProps) {
 
     const [bestTime, setBestTime] = useState<number | null>(0);
 
-    // Ecouter event ScoresUpdated pour afficher bouton Mint
+    const [canMint, setCanMint] = useState<boolean>(false);
+
+    const handleLocallyContractEvents = useCallback((e: any) => {
+        switch (e.detail.type) {
+            case 'scoresUpdated':
+                if (e.detail.value === address) {
+                    setCanMint(true);
+                }
+                break;
+        }
+    }, [address]);
 
     useEffect(() => {
         changeBackgroundClass('scores-bg');
@@ -26,6 +37,12 @@ function Scores({changeComponentToDisplay}: ContentComponentProps) {
             // deleteItemFromLocalStorage('scores');
 
             setScores(scoresFromLocalStorage);
+        }
+
+        window.addEventListener(CONTRACT_EVENT, handleLocallyContractEvents);
+
+        return () => {
+            window.removeEventListener(CONTRACT_EVENT, handleLocallyContractEvents);
         }
     }, []);
 
@@ -50,7 +67,11 @@ function Scores({changeComponentToDisplay}: ContentComponentProps) {
                 <div className="box-mint-title">Le Quiz est terminé !</div>
                 <div className="box-mint-bravo">Bravo!</div>
                 <div className="box-mint-best-time">Meilleur temps : {bestTime}s</div>
-                <button className="btn primary">Mint my certificate</button>
+                {canMint
+                    ? <button className="btn primary">Mint my certificate</button>
+                    : <div>Mint will be available in few seconds...</div>
+                }
+
             </div>
             <div className="scores-box box-details">
                 <div className="box-details-title">Détails des résultats :</div>
