@@ -26,3 +26,8 @@ export interface ScoreAnswer {
     hadRight: boolean;
     answeredIn: number;
 }
+
+export interface ModalProps {
+    displayModal: () => void;
+    hideModal: () => void;
+}
