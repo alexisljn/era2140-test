@@ -9,4 +9,8 @@ async function getOnChainScores(contract: Contract, address: string) {
     return await contract.scores(address);
 }
 
-export {getContract, getOnChainScores}
+async function mint(contract: Contract, merkleProof: Array<string>) {
+    await contract.mint(merkleProof);
+}
+
+export {getContract, getOnChainScores, mint}
