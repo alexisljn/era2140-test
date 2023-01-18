@@ -39,6 +39,10 @@ contract QuizResult is Ownable, ERC721 {
         return _baseUri;
     }
 
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        return string(abi.encodePacked(super.tokenURI(tokenId),'.json?alt=media'));
+    }
+
     function updateScores(bytes32 merkleRoot_, address player, uint8 lastScore, uint8 lastTime) external onlyOwner {
 
         if (merkleRoot_ != merkleRoot) {
