@@ -2,7 +2,12 @@ import {Router} from "express";
 import {ErrorData} from "../types/CommonTypes";
 import {computeScores, generateQuiz} from "../managers/QuizManager";
 import {verifyAccessToken} from "../utils/AuthUtils";
-import {addAddressToMerkleTree, generateMerkleTree, isAddressInMerkleTree} from "../managers/MerkleManager";
+import {
+    addAddressToMerkleTree,
+    generateMerkleTree,
+    generateSingleLeaf,
+    isAddressInMerkleTree
+} from "../managers/MerkleManager";
 import {updateScores} from "../utils/ProviderUtils";
 
 const quizRouter: Router = Router();
@@ -40,9 +45,11 @@ quizRouter
 
         const merkleTree = generateMerkleTree();
 
+        const merkleProof = merkleTree.getHexProof(generateSingleLeaf(address));
+
         await updateScores(merkleTree.getHexRoot(), address, scores.total, scores.time);
 
-        res.status(201).json({scores});
+        res.status(201).json({scores, merkleProof});
     } catch (e) {
         console.log(e); // Logging
 

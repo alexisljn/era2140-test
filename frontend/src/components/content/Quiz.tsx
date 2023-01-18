@@ -56,7 +56,7 @@ function Quiz({changeComponentToDisplay}: ContentComponentProps) {
 
         window.clearInterval(timer.current!);
 
-        const {scores} = await fetchApi(
+        const {scores, merkleProof} = await fetchApi(
             'quiz',
             'POST',
             [
@@ -67,6 +67,7 @@ function Quiz({changeComponentToDisplay}: ContentComponentProps) {
         )
 
         setItemToLocalStorage('scores', scores);
+        setItemToLocalStorage('merkleProof', merkleProof);
 
         changeComponentToDisplay('scores');
 
