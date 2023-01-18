@@ -5,6 +5,8 @@ import {deleteItemFromLocalStorage, getItemFromLocalStorage} from "../../utils/U
 import {ScoresType} from "../../types/CommonTypes";
 import {getOnChainScores} from "../../utils/ContractUtils";
 import {CONTRACT_EVENT} from "../../events/ContractEventsManager";
+import {Mint} from "./scores-children/Mint";
+import {Modal} from "../common/Modal";
 
 function Scores({changeComponentToDisplay}: ContentComponentProps) {
 
@@ -14,17 +16,29 @@ function Scores({changeComponentToDisplay}: ContentComponentProps) {
 
     const [bestTime, setBestTime] = useState<number | null>(0);
 
-    const [canMint, setCanMint] = useState<boolean>(false);
+    const [showModal, setShowModal] = useState<boolean>(false);
 
     const handleLocallyContractEvents = useCallback((e: any) => {
         switch (e.detail.type) {
             case 'scoresUpdated':
                 if (e.detail.value === address) {
-                    setCanMint(true);
+                    (async () => {
+                        const scoresOnChain = await getOnChainScores(contract!, address!);
+
+                        setBestTime(scoresOnChain['bestTime']);
+                    })();
                 }
                 break;
         }
     }, [address]);
+
+    const displayModal = useCallback(() => {
+        setShowModal(true);
+    }, []);
+
+    const hideModal = useCallback(() => {
+        setShowModal(false);
+    }, []);
 
     useEffect(() => {
         changeBackgroundClass('scores-bg');
@@ -32,9 +46,7 @@ function Scores({changeComponentToDisplay}: ContentComponentProps) {
         const scoresFromLocalStorage = getItemFromLocalStorage('scores');
 
         if (scoresFromLocalStorage) {
-            console.log("scores", scoresFromLocalStorage);
-
-            // deleteItemFromLocalStorage('scores');
+            deleteItemFromLocalStorage('scores');
 
             setScores(scoresFromLocalStorage);
         }
@@ -61,36 +73,37 @@ function Scores({changeComponentToDisplay}: ContentComponentProps) {
     }
 
     return (
-        <div className="scores">
-            <div className="scores-box box-mint">
-                <div className="box-mint-emoji">🎉</div>
-                <div className="box-mint-title">Le Quiz est terminé !</div>
-                <div className="box-mint-bravo">Bravo!</div>
-                <div className="box-mint-best-time">Meilleur temps : {bestTime}s</div>
-                {canMint
-                    ? <button className="btn primary">Mint my certificate</button>
-                    : <div>Mint will be available in few seconds...</div>
-                }
-
-            </div>
-            <div className="scores-box box-details">
-                <div className="box-details-title">Détails des résultats :</div>
-                <div className="box-details-answers">
-                    {scores.answers.map((answer, index) => (
-                        <div key={index}
-                             className={answer.hadRight ? "answer-line good-answer" : "answer-line bad-answer"}
-                        >
-                            <div>
-                                {answer.question}
+        <>
+            {showModal &&
+                <Modal hideModal={hideModal}/>
+            }
+            <div className="scores">
+                <div className="scores-box box-mint">
+                    <div className="box-mint-emoji">🎉</div>
+                    <div className="box-mint-title">Le Quiz est terminé !</div>
+                    <div className="box-mint-bravo">Bravo!</div>
+                    <div className="box-mint-best-time">Meilleur temps : {bestTime}s</div>
+                    <Mint displayModal={displayModal} hideModal={hideModal}/>
+                </div>
+                <div className="scores-box box-details">
+                    <div className="box-details-title">Détails des résultats :</div>
+                    <div className="box-details-answers">
+                        {scores.answers.map((answer, index) => (
+                            <div key={index}
+                                 className={answer.hadRight ? "answer-line text-success" : "answer-line text-danger"}
+                            >
+                                <div>
+                                    {answer.question}
+                                </div>
+                                <div className="score-item">
+                                    {answer.answeredIn}s
+                                </div>
                             </div>
-                            <div className="score-item">
-                                {answer.answeredIn}s
-                            </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 
