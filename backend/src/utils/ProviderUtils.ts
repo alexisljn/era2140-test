@@ -1,5 +1,6 @@
-import {Contract, ethers, providers, Signer} from "ethers";
+import {BigNumber, Contract, ethers, providers, Signer} from "ethers";
 import CONTRACT_ABI_JSON from "../artifacts/contracts/QuizResult.sol/QuizResult.json";
+import {generateMetadata, postMetadata} from "./FirebaseUtil";
 
 let provider: providers.Provider | null = null;
 
@@ -7,7 +8,7 @@ let wallet: Signer | null = null;
 
 let contract: Contract | null = null;
 
-function initiateProvider() {
+function initializeProvider() {
     try {
         String(process.env.NODE_ENV === "development")
             ? provider = ethers.getDefaultProvider(String(process.env.NETWORK_NAME))
@@ -17,6 +18,8 @@ function initiateProvider() {
         wallet = new ethers.Wallet(String(process.env.PRIVATE_KEY), provider);
 
         contract = new ethers.Contract(String(process.env.CONTRACT_ADDRESS), CONTRACT_ABI_JSON.abi, wallet);
+
+        listenToMintEvent(contract);
 
         console.log("Provider, wallet and contract has been successfully initiated"); // Server logging
     } catch (e) {
@@ -32,4 +35,21 @@ async function updateScores(merkleRoot: string, address: string, lastScore: numb
     await contract.updateScores(merkleRoot, address, lastScore, lastTime);
 }
 
-export {initiateProvider, updateScores}
+function listenToMintEvent(contract: Contract) {
+    contract.on('Transfer', transferHandler);
+}
+
+async function transferHandler(from: string, to: string, tokenId: BigNumber) {
+    try {
+        const score = await contract.scores(to);
+
+        const metadata = await generateMetadata(score['lastScore'], score['lastTime']);
+
+        await postMetadata(metadata, tokenId);
+    } catch (e) {
+        console.log(e) // Server logging
+    }
+
+}
+
+export {initializeProvider, updateScores}

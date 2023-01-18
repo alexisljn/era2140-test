@@ -3,10 +3,13 @@ import {authRouter} from "./routers/AuthRouter";
 import {ErrorData} from "./types/CommonTypes";
 import dotenv from "dotenv";
 import {quizRouter} from "./routers/QuizRouter";
-import {initiateProvider} from "./utils/ProviderUtils";
+import {initializeProvider} from "./utils/ProviderUtils";
+import {initializeFirebase} from "./utils/FirebaseUtil";
 
 dotenv.config();
-initiateProvider();
+initializeFirebase();
+initializeProvider();
+
 
 const app = express();
 const port = 3000
