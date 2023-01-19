@@ -10,9 +10,9 @@ let contract: Contract | null = null;
 
 function initializeProvider() {
     try {
-        String(process.env.NODE_ENV === "development")
+        String(process.env.NODE_ENV) === "development"
             ? provider = ethers.getDefaultProvider(String(process.env.NETWORK_NAME))
-            : provider = ethers.getDefaultProvider(String(process.env.NETWORK_NAME), {infura: String(process.env.INFURA_KEY)})
+            : provider = new ethers.providers.InfuraProvider(String(process.env.NETWORK_NAME), String(process.env.INFURA_KEY))
         ;
 
         wallet = new ethers.Wallet(String(process.env.PRIVATE_KEY), provider);
