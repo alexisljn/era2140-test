@@ -1,5 +1,7 @@
 # Web3 Technical test
 
+### *Project can't be used anymore, backend has been shutdown*
+
 This project is a technical test for a job offer for a French web3 venture studio.
 
 I had to write a frontend, a backend and a smart contract to create kind of
